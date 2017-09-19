@@ -1,4 +1,4 @@
-node {
+node('devwltvipjnk001') {
    // Mark the code checkout 'stage'....
    stage 'checkout'
 
