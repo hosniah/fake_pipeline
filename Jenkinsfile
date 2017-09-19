@@ -28,7 +28,7 @@ node('devwltvipjnk001') {
 }
 
 
-node {
+node('devwltvipjnk001') {
    stage 'deploy Canary'
    sh 'echo "write your deploy code here"; sleep 5;'
 
