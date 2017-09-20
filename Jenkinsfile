@@ -12,15 +12,25 @@ node('devwltvipjnk001') {
    def mvnHome = tool 'mvn'
 
    stage 'build'
-   // set the version of the build artifact to the Jenkins BUILD_NUMBER so you can, map artifacts to Jenkins builds
-   sh "${mvnHome}/bin/mvn versions:set -DnewVersion=${env.BUILD_NUMBER}"
-   sh "${mvnHome}/bin/mvn package"
+
+   
+   withMaven(
+        // Maven installation declared in the Jenkins "Global Tool Configuration"
+        maven: 'M3') {
+            // set the version of the build artifact to the Jenkins BUILD_NUMBER so you can, map artifacts to Jenkins builds
+            sh "mvn versions:set -DnewVersion=${env.BUILD_NUMBER}"
+            sh "mvn package"
+        } // withMaven will discover the generated Maven artifacts, JUnit Surefire & FailSafe reports and FindBugs reports
 
    stage 'test'
    parallel 'test': {
-     sh "${mvnHome}/bin/mvn test; sleep 2;"
+         withMaven(maven: 'M3') {
+           sh "mvn test; sleep 2;"
+         }
    }, 'verify': {
-     sh "${mvnHome}/bin/mvn verify; sleep 3"
+         withMaven(maven: 'M3') {
+     sh "mvn verify; sleep 3"
+         }
    }
 
    stage 'archive'
